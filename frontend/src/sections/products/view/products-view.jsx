@@ -1,29 +1,33 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 import Stack from '@mui/material/Stack';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Unstable_Grid2';
 import Typography from '@mui/material/Typography';
 
-import { products } from 'src/_mock/products';
+// import { products } from 'src/_mock/products';
+import productService from 'src/services/product.service';
 
 import ProductCard from '../product-card';
-import ProductSort from '../product-sort';
-import ProductFilters from '../product-filters';
 import ProductCartWidget from '../product-cart-widget';
-
 // ----------------------------------------------------------------------
 
 export default function ProductsView() {
-  const [openFilter, setOpenFilter] = useState(false);
+  // const [openFilter, setOpenFilter] = useState(false);
+  // const [currLink, setCurrLink] = useState('');
+  const [products, setProducts] = useState([]);
 
-  const handleOpenFilter = () => {
-    setOpenFilter(true);
-  };
+  useEffect(() => {
+    productService.products({}).then((data) => {
+      setProducts(data.data);
+    });
+  }, []);
 
-  const handleCloseFilter = () => {
-    setOpenFilter(false);
-  };
+  // useEffect(() => {
+  //   productService.products({ link: currLink }).then((data) => {
+  //     setProducts(data.data);
+  //   });
+  // }, [currLink]);
 
   return (
     <Container>
@@ -37,17 +41,7 @@ export default function ProductsView() {
         flexWrap="wrap-reverse"
         justifyContent="flex-end"
         sx={{ mb: 5 }}
-      >
-        <Stack direction="row" spacing={1} flexShrink={0} sx={{ my: 1 }}>
-          <ProductFilters
-            openFilter={openFilter}
-            onOpenFilter={handleOpenFilter}
-            onCloseFilter={handleCloseFilter}
-          />
-
-          <ProductSort />
-        </Stack>
-      </Stack>
+      />
 
       <Grid container spacing={3}>
         {products.map((product) => (

@@ -22,23 +22,24 @@ import Iconify from 'src/components/iconify';
 
 // ----------------------------------------------------------------------
 
-export default function LoginView() {
+export default function SingUpView() {
   const theme = useTheme();
 
   const router = useRouter();
 
   const [user, setUser] = useState({
+    name: '',
     email: '',
     password: '',
+    password_confirmation: '',
   });
-
-  const [message, setMessage] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [message, setMessage] = useState('');
   const [disabled, setDisabled] = useState(false);
 
   const handleClick = () => {
     setDisabled(true);
-    if (user.email === '' || user.password === '') {
+    if (user.email === '' || user.name === '' || user.password === '') {
       setMessage('There is empty field');
       setTimeout(() => {
         setMessage('');
@@ -46,9 +47,8 @@ export default function LoginView() {
       setDisabled(false);
       return;
     }
-
     authService
-      .login(user)
+      .register(user)
       .then((res) => router.replace('/'))
       .catch((e) => setMessage(e.response.data.message));
     setDisabled(false);
@@ -62,6 +62,11 @@ export default function LoginView() {
             {message}
           </Alert>
         )}
+        <TextField
+          name="name"
+          label="Name"
+          onChange={(e) => setUser((u) => ({ ...u, name: e.target.value }))}
+        />
 
         <TextField
           name="email"
@@ -73,7 +78,13 @@ export default function LoginView() {
           name="password"
           label="Password"
           type={showPassword ? 'text' : 'password'}
-          onChange={(e) => setUser((u) => ({ ...u, password: e.target.value }))}
+          onChange={(e) =>
+            setUser((u) => ({
+              ...u,
+              password: e.target.value,
+              password_confirmation: e.target.value,
+            }))
+          }
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
@@ -97,7 +108,7 @@ export default function LoginView() {
         color="inherit"
         onClick={handleClick}
       >
-        Login
+        Register
       </LoadingButton>
     </>
   );
@@ -128,12 +139,12 @@ export default function LoginView() {
             maxWidth: 420,
           }}
         >
-          <Typography variant="h4">Sign in</Typography>
+          <Typography variant="h4">Sign Up</Typography>
 
           <Typography variant="body2" sx={{ mt: 2, mb: 5 }}>
-            Don’t have an account?
-            <Link variant="subtitle2" sx={{ ml: 0.5 }} href="/register">
-              Get started
+            Have an account?
+            <Link variant="subtitle2" sx={{ ml: 0.5 }} href="/login">
+              Sign In
             </Link>
           </Typography>
 

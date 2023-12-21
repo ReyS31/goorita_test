@@ -1,7 +1,9 @@
-import { useState } from 'react';
 import PropTypes from 'prop-types';
+import { useState, useEffect } from 'react';
 
 import Box from '@mui/material/Box';
+
+import { useRouter } from 'src/routes/hooks';
 
 import Nav from './nav';
 import Main from './main';
@@ -11,6 +13,14 @@ import Header from './header';
 
 export default function DashboardLayout({ children }) {
   const [openNav, setOpenNav] = useState(false);
+  const router = useRouter();
+
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem('user'));
+    if (!user) {
+      router.replace('/login');
+    }
+  });
 
   return (
     <>

@@ -20,10 +20,13 @@ class ProductController extends Controller
         }
 
         if ($request->has('name')) {
-            $products = $products->where('name', 'LIKES', '%' . $request->name . '%');
+            $products = $products->where('name', 'LIKE', "%{$request->name}%");
         }
 
-        $products = $products->paginate(25)->toArray();
+        $products = $products
+            ->paginate(25)
+            ->withQueryString()
+            ->toArray();
 
         return response()->json(
             array_merge(
@@ -62,6 +65,7 @@ class ProductController extends Controller
     public function show(string $id)
     {
         $product = Product::find($id);
+        $suggested = Product::inRandomOrder()->take(3)->get();
 
         if (is_null($product)) {
             return response()->json(
@@ -75,7 +79,10 @@ class ProductController extends Controller
         return response()->json(
             [
                 'status' => 'success',
-                'data' => $product
+                'data' => [
+                    'product' => $product,
+                    'suggested' => $suggested
+                ]
             ]
         );
     }
