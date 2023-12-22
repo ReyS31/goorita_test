@@ -32,18 +32,19 @@ const StyledRoot = styled('div')(({ theme }) => ({
 // ----------------------------------------------------------------------
 
 export default function CartWidget() {
-  const { cartItemAmnt } = useCart();
+  const { cart } = useCart();
   const [total, setTotal] = useState(0);
 
   useEffect(() => {
-    setTotal(cartItemAmnt);
-  }, [cartItemAmnt]);
+    if (cart) {
+      setTotal(cart.reduce((a, b) => a + b.amount, 0));
+    }
+  }, [cart]);
 
   return (
     <StyledRoot>
       <Badge showZero badgeContent={total} color="error" max={99}>
         <Iconify icon="eva:shopping-cart-fill" width={24} height={24} />
-        {total}
       </Badge>
     </StyledRoot>
   );

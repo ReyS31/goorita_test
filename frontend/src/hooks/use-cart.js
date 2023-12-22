@@ -18,15 +18,13 @@ const useCart = () => {
 
   const [cart, setCart] = useState([]);
   const [refresh, setRefresh] = useState(true);
-  const cartItemsAmnt = cart.reduce((a, b) => a + b.amount, 0);
 
   useEffect(() => {
     if (refresh) {
       // Function to fetch the cart token from AsyncStorage
       const getCart = async () => {
-        const cartRaw = await cartService.cart();
+        const cartRaw = localStorage.getItem('cart');
         if (cartRaw !== null) {
-          console.log(cartRaw);
           setCart(cartRaw.data);
         }
       };
@@ -36,10 +34,12 @@ const useCart = () => {
   }, [refresh]);
 
   const refreshCart = async () => {
+    const cartRaw = await cartService.cart();
+    localStorage.setItem('cart', JSON.stringify(cartRaw.data));
     setRefresh(true);
   };
 
-  return [cart, refreshCart, cartItemsAmnt];
+  return [cart, refreshCart];
 };
 
 export default useCart;
