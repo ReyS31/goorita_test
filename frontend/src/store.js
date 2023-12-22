@@ -1,13 +1,14 @@
-// import { configureStore } from '@reduxjs/toolkit';
+import { configureStore } from '@reduxjs/toolkit'
 
-// import authReducer from './reducers/auth';
-// import messageReducer from './reducers/message';
+// Import the API object
+import { api } from './slices/apiSlice';
 
-// // Automatically adds the thunk middleware and the Redux DevTools extension
-// const store = configureStore({
-//   // Automatically calls `combineReducers`
-//   reducer: {
-//     message: messageReducer,
-//     auth: authReducer,
-//   },
-// });
+export const store = configureStore({
+  reducer: {
+    // Add the generated RTK Query "API slice" caching reducer
+    [api.reducerPath]: api.reducer,
+  },
+  // Add the RTK Query API middleware
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat(api.middleware),
+})

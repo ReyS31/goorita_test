@@ -1,8 +1,11 @@
+import { useState, useEffect } from 'react';
+
 import Badge from '@mui/material/Badge';
 import { styled } from '@mui/material/styles';
 
-import Iconify from 'src/components/iconify';
+import useCart from 'src/hooks/use-cart';
 
+import Iconify from 'src/components/iconify';
 // ----------------------------------------------------------------------
 
 const StyledRoot = styled('div')(({ theme }) => ({
@@ -29,10 +32,18 @@ const StyledRoot = styled('div')(({ theme }) => ({
 // ----------------------------------------------------------------------
 
 export default function CartWidget() {
+  const { cartItemAmnt } = useCart();
+  const [total, setTotal] = useState(0);
+
+  useEffect(() => {
+    setTotal(cartItemAmnt);
+  }, [cartItemAmnt]);
+
   return (
     <StyledRoot>
-      <Badge showZero badgeContent={0} color="error" max={99}>
+      <Badge showZero badgeContent={total} color="error" max={99}>
         <Iconify icon="eva:shopping-cart-fill" width={24} height={24} />
+        {total}
       </Badge>
     </StyledRoot>
   );

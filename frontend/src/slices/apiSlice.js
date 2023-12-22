@@ -1,9 +1,15 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 export const api = createApi({
   baseQuery: fetchBaseQuery({
     // Fill in your own server starting URL here
-    baseUrl: '/',
+    baseUrl: 'http://localhost:8000/api/user',
   }),
-  endpoints: (build) => ({}),
-})
+  endpoints: (build) => ({
+    getCart: build.query({
+      query: () => '/cart',
+    }),
+  }),
+});
+
+export const { useGetCartQuery } = api;

@@ -35,10 +35,10 @@ Route::prefix('user')->middleware(['auth:sanctum', 'role:user'])->group(function
     Route::post('/checkout', [UserOrderController::class, 'finishOrder']);
 
     Route::prefix('cart')->group(function () {
-        Route::get('/', [UserOrderController::class, 'cart']);
-        Route::post('/add', [UserOrderController::class, 'addToCart']);
-        Route::delete('/remove', [UserOrderController::class, 'removeFromCart']);
+        Route::delete('/remove/{id}', [UserOrderController::class, 'removeFromCart']);
         Route::put('/update', [UserOrderController::class, 'updateCart']);
+        Route::post('/add', [UserOrderController::class, 'addToCart']);
+        Route::get('/', [UserOrderController::class, 'cart']);
     });
 });
 

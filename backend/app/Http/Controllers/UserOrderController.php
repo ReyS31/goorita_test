@@ -12,19 +12,15 @@ use Illuminate\Http\Request;
 class UserOrderController extends Controller
 {
     // Cek jika produk telah dicheckout di bawah 24 jam
-    private function checkIsAvailable($user, $product)
+    private function checkIsAvailable($user, $product): bool
     {
-        $orders = Orders::where('updated_at', '>', Carbon::now()->subHours(24))->where('user_id', $user->id)->where('done', 1)->with('orderDetails')->get();
-        foreach ($orders as $order) {
-            foreach ($order->orderDetails as $detail) {
-                if ($detail->product_id == $product->id) {
-                    return response()->json([
-                        'status' => 'fail',
-                        'msg' => "can't add product to cart"
-                    ], 422);
-                }
-            }
+        $order = Orders::where('updated_at', '>', Carbon::now()->subHours(24))->where('user_id', $user->id)->where('done', 1)->whereHas('orderDetails', function ($q) use ($product) {
+            $q->where('product_id',  $product->id);
+        })->first();
+        if ($order != null) {
+            return false;
         }
+        return true;
     }
 
     function addToCart(Request $req)
@@ -45,7 +41,12 @@ class UserOrderController extends Controller
             ], 404);
         }
 
-        $this->checkIsAvailable($user, $product);
+        if (!$this->checkIsAvailable($user, $product)) {
+            return response()->json([
+                'status' => 'fail',
+                'msg' => "can't add product to cart"
+            ], 422);
+        }
 
         // Mencari order yang belum selesai
         // jika tidak ada maka buat baru
@@ -83,15 +84,12 @@ class UserOrderController extends Controller
         ]], 200);
     }
 
-    function removeFromCart(Request $request)
+    function removeFromCart(Request $request, string $id)
     {
-        $request->validate([
-            'detail_id' => ['required']
-        ]);
 
         $user = $request->user();
 
-        $orderDetail = OrderDetails::where('id', $request->detail_id)->first();
+        $orderDetail = OrderDetails::where('id', $id)->first();
         $order = Orders::where('id', $orderDetail->orders_id)->where('user_id', $user->id)->first();
 
         $order->total -= $orderDetail->total;
@@ -143,7 +141,7 @@ class UserOrderController extends Controller
 
         $order = Orders::where('done', 0)->where('user_id', $user->id)->first();
 
-        // Ambil 1% untuk koperasi
+        // Ambil 1% untuk koperasi (simulasi jika di-implement)
         // $koperasiAmount = $order->total * 0.01;
         // $koperasiWallet->amount = $koperasiAmount;
         // $gooritaWallet->amount = $order->total - $koperasiAmount;
