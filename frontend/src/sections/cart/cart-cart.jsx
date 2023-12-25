@@ -9,7 +9,7 @@ import Typography from '@mui/material/Typography';
 import { fCurrency } from 'src/utils/format-number';
 // ----------------------------------------------------------------------
 
-export default function ShopProductCard({ product }) {
+export default function CartCard({ product, amount }) {
   const renderImg = (
     <Box
       component="img"
@@ -42,29 +42,32 @@ export default function ShopProductCard({ product }) {
     </Typography>
   );
 
+  const renderAmount = (
+    <Typography>
+      Amount: {amount}
+    </Typography>
+  );
+
   return (
     <Card>
       <Box sx={{ pt: '100%', position: 'relative' }}>{renderImg}</Box>
 
       <Stack spacing={2} sx={{ p: 3 }}>
-        <Link
-          color="inherit"
-          underline="hover"
-          variant="subtitle2"
-          href={`/products/${product.id}`}
-          noWrap
-        >
+        <Link color="inherit" underline="hover" variant="subtitle2" noWrap>
           {product.name}
         </Link>
 
         <Stack direction="row" alignItems="center" justifyContent="space-between">
           {renderPrice}
         </Stack>
+
+        {renderAmount}
       </Stack>
     </Card>
   );
 }
 
-ShopProductCard.propTypes = {
+CartCard.propTypes = {
   product: PropTypes.object,
+  amount: PropTypes.number,
 };

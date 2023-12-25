@@ -4,13 +4,13 @@ import { useParams } from 'react-router-dom';
 
 import productService from 'src/services/product.service';
 
-import { ProductsView } from 'src/sections/products/view';
+import { ProductView } from 'src/sections/products/view';
 
 // ----------------------------------------------------------------------
 
 export default function ProductDetailPage() {
   const { id } = useParams();
-  const [data, setData] = useState();
+  const [data, setData] = useState(null);
 
   useEffect(() => {
     const loadProduct = async () => {
@@ -28,7 +28,9 @@ export default function ProductDetailPage() {
         <title> Products | {data?.product?.name ?? ''} </title>
       </Helmet>
 
-      <ProductsView />
+      {data !== null ? (
+        <ProductView product={data.product} suggested={data.suggested} />
+      ) : null}
     </>
   );
 }

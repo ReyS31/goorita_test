@@ -1,14 +1,13 @@
-import { configureStore } from '@reduxjs/toolkit'
+import { configureStore } from '@reduxjs/toolkit';
 
 // Import the API object
-import { api } from './slices/apiSlice';
+import cartReducer from './slices/cartSlice';
 
 export const store = configureStore({
   reducer: {
     // Add the generated RTK Query "API slice" caching reducer
-    [api.reducerPath]: api.reducer,
+    cart: cartReducer,
   },
   // Add the RTK Query API middleware
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(api.middleware),
-})
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware(),
+});

@@ -5,6 +5,8 @@ import Container from '@mui/material/Container';
 import Grid from '@mui/material/Unstable_Grid2';
 import Typography from '@mui/material/Typography';
 
+import useCart from 'src/hooks/use-cart';
+
 // import { products } from 'src/_mock/products';
 import productService from 'src/services/product.service';
 
@@ -15,13 +17,16 @@ import ProductCartWidget from '../product-cart-widget';
 export default function ProductsView() {
   // const [openFilter, setOpenFilter] = useState(false);
   // const [currLink, setCurrLink] = useState('');
+  const [, refreshCart] = useCart();
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
     productService.products({}).then((data) => {
       setProducts(data.data);
+      refreshCart();
+      // console.log(data.data);
     });
-  }, []);
+  }, [refreshCart]);
 
   // useEffect(() => {
   //   productService.products({ link: currLink }).then((data) => {

@@ -30,7 +30,7 @@ export default {
 
   async checkout() {
     const response = await axios.post(
-      `${API_URL}/user/cart/add`,
+      `${API_URL}/user/checkout`,
       {},
       {
         headers: authHeader(),

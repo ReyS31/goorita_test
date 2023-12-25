@@ -1,9 +1,10 @@
+import { useSelector } from 'react-redux';
 import { useState, useEffect } from 'react';
 
 import Badge from '@mui/material/Badge';
 import { styled } from '@mui/material/styles';
 
-import useCart from 'src/hooks/use-cart';
+import { getCart } from 'src/slices/cartSlice';
 
 import Iconify from 'src/components/iconify';
 // ----------------------------------------------------------------------
@@ -32,7 +33,7 @@ const StyledRoot = styled('div')(({ theme }) => ({
 // ----------------------------------------------------------------------
 
 export default function CartWidget() {
-  const { cart } = useCart();
+  const cart = useSelector(getCart);
   const [total, setTotal] = useState(0);
 
   useEffect(() => {

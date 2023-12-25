@@ -1,5 +1,7 @@
+import { useDispatch } from 'react-redux';
 import { useState, useEffect } from 'react';
 
+import { updateData } from 'src/slices/cartSlice';
 import cartService from 'src/services/cart.service';
 
 // Define your custom hook
@@ -19,13 +21,15 @@ const useCart = () => {
   const [cart, setCart] = useState([]);
   const [refresh, setRefresh] = useState(true);
 
+  const dispatch = useDispatch();
+
   useEffect(() => {
     if (refresh) {
       // Function to fetch the cart token from AsyncStorage
       const getCart = async () => {
         const cartRaw = localStorage.getItem('cart');
         if (cartRaw !== null) {
-          setCart(cartRaw.data);
+          setCart(JSON.parse(cartRaw));
         }
       };
       getCart();
@@ -36,6 +40,7 @@ const useCart = () => {
   const refreshCart = async () => {
     const cartRaw = await cartService.cart();
     localStorage.setItem('cart', JSON.stringify(cartRaw.data));
+    dispatch(updateData(cartRaw.data));
     setRefresh(true);
   };
 
